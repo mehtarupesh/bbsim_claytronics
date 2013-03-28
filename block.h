@@ -37,6 +37,7 @@ struct _Block
 
   /* Current Time */
   Time localTime;
+  Time lastSimTime;
   
   int simLEDr, simLEDg, simLEDb, simLEDi;
   
@@ -70,6 +71,6 @@ int countNeighbors(Block* b);
 void updateTime(Block* block, Time ts, int delta);
 int checkSchedule(void);
 void needsSchedule(Block* block, Time ts);
-
+void initTimeKeeping();
 
 #endif
