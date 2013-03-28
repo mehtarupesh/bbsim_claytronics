@@ -14,8 +14,8 @@ static int allBlockSize = 0;
 void initBlockList()
 {
   Q_INIT_HEAD(&blockList);
-  allBlocks = (Block**)calloc(32, sizeof(Block*));
-  allBlockSize = 32;
+  allBlocks = (Block**)calloc(2, sizeof(Block*));
+  allBlockSize = 2;
 }
 
 
@@ -23,7 +23,8 @@ void registerBlock(Block* block)
 {
   Q_INSERT_TAIL(&blockList, block, blockLink);
   if (block->id >= allBlockSize) {
-    allBlocks = (Block**)realloc(allBlocks, allBlockSize*2);
+    //fprintf(stderr, "Reallocing to %d\n", allBlockSize*2);
+    allBlocks = (Block**)realloc(allBlocks, allBlockSize*2*sizeof(Block*));
     allBlockSize = allBlockSize*2;
   }
   allBlocks[block->id] = block;
@@ -60,6 +61,7 @@ createBlock(int x, int y, int z)
 
   newBlock->destroyed = 0;
   newBlock->localTime = globalTimeStamp;
+  newBlock->lastSimTime = globalTimeStamp-1;
 
   int i;
   for (i=0; i<NUM_PORTS; i++) {
@@ -186,17 +188,26 @@ tellNeighborsDestroyed(Block *b, FaceBlock* list)
 #include "heap.h"
 
 int
-btCompare(Block* a, Block* b)
+bLocalTimeCompare(Block* a, Block* b)
 {
   return a->localTime - b->localTime;
 }
 
-Heap* sheap;
+int
+bLastSimTimeCompare(Block* a, Block* b)
+{
+  return a->lastSimTime - b->lastSimTime;
+}
+
+Heap* gheap;                    /* blocktime vrs. globaltime */
+Heap* dheap;                    /* blocktime vrs. last sim time */
 
 void
-initTimeKeeping()
+initTimeKeeping(void)
 {
-  sheap = newHeap(10, (ComparisonFunction)btCompare);
+  gheap = newHeap(10, (ComparisonFunction)bLocalTimeCompare);
+  dheap = newHeap(10, (ComparisonFunction)bLastSimTimeCompare);
+  globalTimeStamp = 0;
 }
 
 void
@@ -204,28 +215,51 @@ updateTime(Block* block, Time ts, int delta)
 {
   if (block->localTime <= ts) {
     block->localTime = ts;
-    if (heapUpdate(sheap, block) == NULL) {
-      heapAdd(sheap, block);
+    if (heapUpdate(gheap, block) == NULL) {
+      heapAdd(gheap, block);
     }
   }
-  Block* minBlock = (Block*)heapPeek(sheap);
+  Block* minBlock = (Block*)heapPeek(gheap);
   if (minBlock->localTime > globalTimeStamp) 
     globalTimeStamp = minBlock->localTime;
+}
+
+static int
+checkGlobalTime(Block* b)
+{
+  return b->localTime < globalTimeStamp;
+}
+
+static int
+checkSimTime(Block* b)
+{
+  return b->lastSimTime < b->localTime;
+}
+
+static int
+checkASched(Heap* heap, int (*ok)(Block*))
+{
+  int cnt = 0;
+  Block* b = heapPeek(heap);
+  if (b == NULL) return 0;
+  while ((b != NULL) && ok(b)) {
+    heapRemove(heap);
+    b->localTime = globalTimeStamp;
+    cnt++;
+    msg2vm(b, CMD_RUN, b->localTime);
+    b->lastSimTime = b->localTime;
+    b = heapPeek(heap);
+  }
+  return cnt;
+
 }
 
 int
 checkSchedule(void)
 {
-  int cnt = 0;
-  Block* b = heapPeek(sheap);
-  if (b == NULL) return 0;
-  while ((b != NULL) && (b->localTime < globalTimeStamp)) {
-    heapRemove(sheap);
-    b->localTime = globalTimeStamp;
-    cnt++;
-    msg2vm(b, CMD_RUN, b->localTime);
-    b = heapPeek(sheap);
-  }
+  int cnt;
+  cnt = checkASched(gheap, checkGlobalTime);
+  if (cnt == 0) cnt = checkASched(dheap, checkSimTime);
   return cnt;
 }
 
