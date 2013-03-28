@@ -68,7 +68,7 @@ createBlock(int x, int y, int z)
     newBlock->neighborhood[i] = NULL;
   }
 
-  //fprintf(stderr, "made block, inserting into Q");
+  //fprintf(stderr, "made block, inserting into Q\n");
   registerBlock(newBlock);
 
   msg2vm(newBlock, CMD_CREATE, newBlock->localTime, 1, newBlock->id);
