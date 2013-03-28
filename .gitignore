@@ -1,3 +1,8 @@
+# personalized ignores
+.,*
+sim
+Makefile.externs
+
 # Object files
 *.o
 
