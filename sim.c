@@ -124,7 +124,7 @@ int main(int argc, char** argv)
 
    // start timer
    
-   globalTimeStamp = 0;
+   initTimeKeeping();
 
    // vm initialization
    vmInit(port);
