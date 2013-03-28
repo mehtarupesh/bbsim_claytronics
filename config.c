@@ -92,9 +92,12 @@ void readConfig(char* name)
 			break;
 
 		int x, y, z, dir;
+		//fprintf(stderr, "[%s]\n", buffer);
 		int num = sscanf(buffer, "%d, %d, %d, %d", &x, &y, &z, &dir);
-		assert(num == 4);
+		if (num != 4)
+		  err("Input from %s:%d expected 4, got %d [%s]", name, line, num, buffer);
 
+		//fprintf(stderr, "create %d at: %d, %d, %d\n", line, x, y, z);
 		createBlock(x, y, z);
 
 		line++;
