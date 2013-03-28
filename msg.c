@@ -395,7 +395,7 @@ listener(void* ignoreme)
          // we sheduled something
          nothingHappened = 0;
        } else if (nothingHappened++ > 10) {
-         fprintf(stderr, "Increment gts: %d", globalTimeStamp);
+         fprintf(stderr, "Increment gts: %d\n", globalTimeStamp);
          globalTimeStamp++;
        }
      }
