@@ -48,10 +48,14 @@ void err(char* prompt, ...)
 void help(void)
 {
   fprintf(stderr, "%s: simulate blocks\n", progname);
-  fprintf(stderr, "\t-c <name>:\tfile with initial configuration\n");
-  fprintf(stderr, "\t-r generates a random block configuration\n");
-  fprintf(stderr, "\t-d debug statements enabled\n");
-  fprintf(stderr, "\t-n disables graphics\n");
+  fprintf(stderr, "\t-c <name>\tfile with initial configuration\n");
+  fprintf(stderr, "\t-i <count>\tIn ND mode, terminate after <count> cycles with no msgs from meldvm\n");
+  fprintf(stderr, "\t-p <num>\tuse port <num> for meldvm\n");
+  fprintf(stderr, "\t-r\t\tgenerates a random block configuration\n");
+  fprintf(stderr, "\t-D\t\tuse deterministic sim mode with meldvm\n");
+  fprintf(stderr, "\t-R <num>\tgenerates a random block configuration of <num> blocks\n");
+  fprintf(stderr, "\t-d\t\tdebug statements enabled\n");
+  fprintf(stderr, "\t-n\t\tdisables graphics\n");
 
   exit(0);
 }
