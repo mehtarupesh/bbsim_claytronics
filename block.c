@@ -59,6 +59,9 @@ createBlock(int x, int y, int z)
   newBlock->simLEDb = 120;
   newBlock->simLEDi = 200;
 
+  newBlock->msgTargetsDelta = 0;
+  newBlock->msgTargets = 0;
+
   newBlock->destroyed = 0;
   newBlock->localTime = globalTimeStamp;
   newBlock->lastSimTime = globalTimeStamp-1;
@@ -268,6 +271,20 @@ needsSchedule(Block* block, Time ts)
 {
 }
 
+void
+showBlock(FILE* f, Block* block)
+{
+  fprintf(f, "%s:%d (%2d,%2d,%2d) [%3d,%3d,%3d,%3d]\n", 
+          nodeIDasString(block->id, 0),
+          block->msgTargets,
+          block->x,
+          block->y,
+          block->z,
+          block->simLEDr,
+          block->simLEDg,
+          block->simLEDb,
+          block->simLEDi);
+}
 
 // Local Variables:
 // tab-width: 4
