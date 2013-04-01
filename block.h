@@ -35,6 +35,10 @@ struct _Block
   int y;
   int z;
 
+  // track activity in vm
+  int msgTargetsDelta;
+  int msgTargets;
+
   /* Current Time */
   Time localTime;
   Time lastSimTime;
@@ -72,5 +76,10 @@ void updateTime(Block* block, Time ts, int delta);
 int checkSchedule(void);
 void needsSchedule(Block* block, Time ts);
 void initTimeKeeping();
+void showBlock(FILE* f, Block* block);
+
+// quick iterator for all blocks
+
+#define ForEachBlock(ptr)  for ((ptr)=Q_GET_FRONT(getBlockList()); (ptr) != NULL; (ptr)=Q_GET_NEXT((ptr), blockLink))
 
 #endif
