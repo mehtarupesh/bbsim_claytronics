@@ -24,6 +24,8 @@ int lastBlockId = 0;
 Time maxGlobalSimTime = 0;
 Time globalTimeStamp = 0;
 int vmUseThreads = true;
+char* testfile = NULL;
+int stopwhenidle = -1;
 
 void __myassert(char* file, int line, char* exp)
 {
@@ -75,8 +77,6 @@ int main(int argc, char** argv)
    bool   configured = false;
    bool   graphics = true;
    char* port = "5000";
-   char* configFile = NULL;
-   int   configCount = 0;
 
    --argc;
    progname = *argv++;
@@ -94,8 +94,17 @@ int main(int argc, char** argv)
     	  argc--;  argv++;
 	  break;
 
+      case 'i':
+	stopwhenidle = atoi(argv[1]);
+    	  argc--;  argv++;
+          break;
       case 'd':
     	  debug = true;
+          break;
+      case 't':
+	graphics = false;
+	testfile = argv[1];
+    	  argc--;  argv++;
           break;
       case 'n':
    	  graphics = false;
@@ -134,6 +143,9 @@ int main(int argc, char** argv)
    // create blocklist and initialize mutex
    initBlockList();
 
+   // see if we are running a test
+   if (testfile) configured = configtest(testfile);
+
    if (!configured) {
      help();
    } else {
@@ -150,30 +162,74 @@ int main(int argc, char** argv)
      // GL loop indefinitely
      event_loop();
    } else {
-     fprintf(stderr, "Running without graphics??\n");
+     fprintf(stderr, "Running without graphics\n");
+     int idle = 0;
      while (1) {
        Block *block;
        sleep(1);
-       fprintf(stderr, "\n----\n");
-       Q_FOREACH(block, getBlockList(), blockLink) {
-	   fprintf(stderr, "%s:%d (%2d,%2d,%2d) [%3d,%3d,%3d,%3d]\n", 
-		   nodeIDasString(block->id, 0),
-		   block->blockReady,
-		   block->x,
-		   block->y,
-		   block->z,
-		   block->simLEDr,
-		   block->simLEDg,
-		   block->simLEDb,
-		   block->simLEDi);
+       int changes = 0;
+       ForEachBlock(block) {
+	 if (block->msgTargetsDelta > 0) changes++;
        }
-       Q_ENDFOREACH(getBlockList());
+       if (changes == 0) {
+	 idle++;
+	 if ((stopwhenidle > 0) && (idle > stopwhenidle)) {
+	   printf("All Done\n");
+	   msg2vm(NULL, STOP, 0);
+	 }
+	 continue;
+       }
+       idle = 0;
+       fprintf(stderr, "\n---- %d\n", changes);
+
+       // something changed
+       ForEachBlock(block) {
+	 if (block->msgTargetsDelta > 0) {
+	   block->msgTargets += block->msgTargetsDelta;
+	   block->msgTargetsDelta = 0;
+	   showBlock(stderr, block);
+	 }
+	 if (checkTest(0)) {
+	   msg2vm(NULL, STOP, 0);
+	 }
+       }
        fprintf(stderr, "\n");
      }
    }
 
    // we are all done
    return 0;
+}
+
+int
+checkTest(alldone)
+{
+  Block* block;
+  if (testfile == NULL) return 0;
+  // see if we are done
+  int waiting = 0;
+  int failed = 0;
+  ForEachBlock(block) {
+    int* tdata = testData[block->id];
+    if (alldone || (block->msgTargets >= tdata[1])) {
+      if ((block->x != tdata[2])||(block->y != tdata[3])||(block->z != tdata[4])) 
+	err("Block %d in wrong position", block->id);
+      if ((block->simLEDr == tdata[5])&&
+	  (block->simLEDg == tdata[6])&&
+	  (block->simLEDb == tdata[7])&&
+	  (block->simLEDi == tdata[8])) printf("%d passed\n", block->id);
+      else
+	failed++;
+    } else {
+      waiting++;
+    }
+  }
+  if ((failed == 0)&&(waiting==0)) {
+    fprintf(stdout, "Test Passed\n");
+    testfile = NULL;		/* don't check again */
+    return 1;
+  }
+  return 0;
 }
 
 // will return 0 if never called before, other return 1
