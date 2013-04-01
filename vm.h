@@ -26,7 +26,7 @@ typedef struct _message_format {
       message_type i;
     } color;
 
-    // CMD_NBR_ADD
+    // CMD_ADD_NBR
     struct {
       message_type nid;
       message_type face;
