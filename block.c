@@ -216,6 +216,7 @@ initTimeKeeping(void)
 void
 updateTime(Block* block, Time ts, int delta)
 {
+  fprintf(stderr, "Updatetime: %d <- %d was:%d, %d\n", block->id, ts, block->localTime, block->lastSimTime);
   if (block->localTime <= ts) {
     block->localTime = ts;
     if (heapUpdate(gheap, block) == NULL) {
@@ -274,9 +275,11 @@ needsSchedule(Block* block, Time ts)
 void
 showBlock(FILE* f, Block* block)
 {
-  fprintf(f, "%s:%d (%2d,%2d,%2d) [%3d,%3d,%3d,%3d]\n", 
+  fprintf(f, "%s:%d @%d,%d (%2d,%2d,%2d) [%3d,%3d,%3d,%3d]\n", 
           nodeIDasString(block->id, 0),
           block->msgTargets,
+          block->localTime,
+          block->lastSimTime,
           block->x,
           block->y,
           block->z,
