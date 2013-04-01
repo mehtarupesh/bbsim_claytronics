@@ -249,6 +249,10 @@ msg2vm(Block* dest, VMCommand cmd, Time timestamp, ...)
 
   sendit(&buffer);
   va_end(ap);
+  // now deal with time update
+  if (dest && !vmUseThreads) {
+    updateTime(dest, timestamp+1, 0);
+  }
 }
 
 static message_type
@@ -401,6 +405,10 @@ listener(void* ignoreme)
          nothingHappened = 0;
        } else if (nothingHappened++ > 10) {
          fprintf(stderr, "Increment gts: %d\n", globalTimeStamp);
+         Block* b;
+         ForEachBlock(b) {
+           showBlock(stderr, b);
+         }
          globalTimeStamp++;
        }
      }
