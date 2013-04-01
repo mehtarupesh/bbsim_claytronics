@@ -33,6 +33,7 @@ vmcmd2str(VMCommand cmd)
   case CMD_DEL_NCOUNT: return "delNcnt";
   case CMD_ADD_VACANT: return "addVnct";
   case CMD_DEL_VACANT: return "delVnct";
+  case STOP: return "stopvm";
   default:	sprintf(buffer, "??%d??", cmd); return buffer;
   }
   return "??";
@@ -257,6 +258,7 @@ handle_data(message *msg)
   Block* block = getBlock(nodeid);
   Time ts = (Time)msg->timestamp;
 
+  block->msgTargetsDelta++;
   if (msgverbose) fprintf(stderr, "Got message of %d from %u @ %u\n", (int)msg->size, (int)nodeid, (int)ts);
   if (block == NULL) err("unknown block with id %d in msg\n", nodeid);
   switch(msg->command) {
@@ -303,7 +305,10 @@ force_read(int sock)
   nothingHappened = 0;
 
   mlength = recvfrom(sock, (void*)&data, sizeof(message_type), MSG_WAITALL, (struct sockaddr *)&cliaddr, &clilen);
-  if (mlength == -1) err("Failed to read1:%d:%s\n", errno, strerror(errno));
+  if (mlength == -1) {
+    if (errno == 104) return 0;
+    err("Failed to read1:%d:%s\n", errno, strerror(errno));
+  }
   if (mlength == 0) return 0;	/* socket is closed */
   assert(mlength == sizeof(message_type)); /* this is bad form, but will leave for now */
   //fprintf(stderr, "%d\n", (int)mlength);
@@ -401,6 +406,13 @@ listener(void* ignoreme)
      }
    }
    // all done?
+   // final status report
+   printf("Final Status\n");
+   Block* block;
+   ForEachBlock(block) {
+     showBlock(stdout, block);
+   }
+   checkTest(1);
    exit(0);
    return (void*)0;
 }
