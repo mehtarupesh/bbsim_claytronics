@@ -5,5 +5,6 @@ void err(char *prompt, ...);
 void vmStarted(void);
 Time globalTimeStamp;
 int vmUseThreads;
+int checkTest(int alldone);
 
 #endif
