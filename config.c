@@ -5,6 +5,10 @@
 #include <time.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
+
+char* configFile = NULL;
+int   configCount = 0;
 
 void randomConfig(int maxcount)
 {
@@ -103,3 +107,145 @@ void readConfig(char* name)
 	}
 	fclose(f);
 }
+
+static char* delim = ",()[] \t:\n";
+
+static 
+char** parseline(char* input)
+{
+  int wordcount = 0;
+  int tlen = 0;
+
+  int state = 0;
+  int len = strlen(input);
+  int i;
+  for (i=0; i<len; i++) {
+    int c = input[i];
+    switch (state) {
+    case 0:			/* getting delims */
+      if (strchr(delim, c) == NULL) {
+	state = 1;
+	wordcount++;
+	tlen += 2;
+      }
+      break;
+
+    case 1:			/* getting a token */
+      if (strchr(delim, c) != NULL) {
+	state = 0;
+      } else {
+	tlen++;
+      }
+      break;
+    }
+  }
+  if (wordcount == 0) return NULL;
+  wordcount++;			/* to account for NULL at end of last token */
+  char** tokens = malloc(wordcount*sizeof(char*)+tlen+3);
+  char* string = (char*)(((char*)tokens)+(wordcount*sizeof(char*)));
+  fprintf(stderr, "%p, %p, %d\n", tokens, string, (int)(wordcount*sizeof(char*)+tlen));
+  state = 0;
+  int tcnt = 0;
+  for (i=0; i<len; i++) {
+    int c = input[i];
+    switch (state) {
+    case 0:			/* getting delims */
+      if (strchr(delim, c) == NULL) {
+	state = 1;
+	wordcount++;
+	tokens[tcnt++] = string;
+	*string++ = (char)c;
+      }
+      break;
+
+    case 1:			/* getting a token */
+      if (strchr(delim, c) != NULL) {
+	*string++ = 0;
+	state = 0;
+      } else {
+	*string++ = (char)c;
+      }
+      break;
+    }
+  }
+  *string++ = 0;
+  tokens[tcnt] = NULL;
+  fprintf(stderr, "string = %p, tcnt=%d, %p\n", string, tcnt, &(tokens[tcnt]));
+
+  for (i=0; tokens[i] != NULL; i++) {
+    fprintf(stderr, "%d: %s %p\n", i, tokens[i], tokens[i]);
+  }
+
+  return tokens;
+}
+
+int** testData;
+int testDataSize = 0;
+
+void
+dictAdd(int key, int* data)
+{
+  if (testDataSize == 0) {
+    testDataSize = 8;
+    testData = calloc(testDataSize, sizeof(int*));
+  } else while (testDataSize <= key) {
+    testData = realloc(testData, testDataSize*2*sizeof(int*));
+    testDataSize = 2*testDataSize;
+  }
+  testData[key] = data;
+
+  fprintf(stderr, "Node: %d ->", key);
+  int i;
+  for (i=0; i<9; i++) {
+    fprintf(stderr, "\t%d", data[i]);
+  }
+  fprintf(stderr, "\n");
+}
+
+int 
+configtest(char* name)
+{
+  int hasconf = 0;
+
+  FILE* f = fopen(name, "r");
+  if (f == NULL)
+    err("Can't open %s for reading", name);
+
+  int line = 1;
+  while (!feof(f)) {
+    char buffer[256];
+    char* p = fgets(buffer, 256, f);
+    if (p == NULL)
+      break;
+    char** tokens = parseline(p);
+    if (tokens == NULL) continue;
+
+    if (strcmp(tokens[0], "config")==0) {
+      // check that config file exists
+      FILE* f = fopen(tokens[1], "r");
+      if (f == NULL) 
+	err("Can't open %s for reading config", tokens[1]);
+      fclose(f);
+      configFile = strdup(tokens[1]);
+      hasconf = 1;
+    } else if (strcmp(tokens[0], "meld") == 0) {
+      // ignore this
+    } else if (isdigit(tokens[0][0])) {
+      // this sets value of node
+      // node, msgs, x, y, z, r, g, b, i
+      int i;
+      int* vals = calloc(9, sizeof(int));
+      for (i=0; (tokens[i] != NULL)&&(i<9); i++)
+	vals[i] = atoi(tokens[i]);
+      if (i != 9)
+	err("Illegal final spec line at %s:%d", name, line);
+      dictAdd(vals[0], vals);
+    } else
+      err("Illegal syntax at %s:%d", name, line);
+    line++;
+    free(tokens);
+  }
+  fclose(f);
+  return hasconf;
+}
+      
