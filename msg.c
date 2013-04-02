@@ -24,6 +24,8 @@ vmcmd2str(VMCommand cmd)
 
   switch(cmd) {
   case CMD_CREATE:	return "create";
+  case CMD_HAS_RUN:	return "ranfor";
+  case CMD_RUN:	return "runtil";
   case CMD_ADD_NBR: return "addNbr";
   case CMD_DEL_NBR: return "delNbr";
   case CMD_COLOR: return "color";
@@ -263,7 +265,7 @@ handle_data(message *msg)
   Time ts = (Time)msg->timestamp;
 
   block->msgTargetsDelta++;
-  if (msgverbose) fprintf(stderr, "Got message of %d from %u @ %u\n", (int)msg->size, (int)nodeid, (int)ts);
+  if (1 || msgverbose) fprintf(stderr, "Got message of %d from %u @ %u\n", (int)msg->size, (int)nodeid, (int)ts);
   if (block == NULL) err("unknown block with id %d in msg\n", nodeid);
   switch(msg->command) {
   case SET_COLOR: 
