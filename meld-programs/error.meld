@@ -1,0 +1,33 @@
+// splash.meld
+// Awaken to Blue
+// If you detect a tap, setNextColor on yourself, wait 500ms, then setNextColor on your neighbors.
+include #inc/color.meld
+
+type linear color(node, int).
+type linear tappedBy(node, node).
+type linear doTap(node, node).
+type linear tap(node).
+type route neighbor(node, node, int).
+
+color(X,BLUE).
+!setColor2(X, BLUE).
+
+color(X, N),
+tap(X)
+   -o !setColor2(X, (N + 1) % NUM_COLORS),
+      color(X, N + 1),
+      doTap(X, X).
+
+color(X, N),
+tappedBy(X, Y),
+X <> Y
+   -o color(X, N + 1),
+      doTap(X, Y),
+      !setColor2(X, (N + 1) % NUM_COLORS).
+
+[:random Z |
+   !neighbor(X, Z, _),
+   doTap(X, Y),
+   Y <> Z]
+   -o tappedBy(Z, X)@+1s.
+

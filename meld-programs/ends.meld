@@ -1,0 +1,13 @@
+include #inc/color.meld
+
+type route neighbor(node, node, int).
+type neighborCount(node, int).
+type linear tap(node).
+type linear red(node).
+type linear blue(node).
+
+!neighborCount(X, C), C > 1
+   -o !setColor2(X, BLUE).
+
+!neighborCount(X, 1)
+   -o !setColor2(X, RED).

@@ -1,0 +1,12 @@
+
+include #inc/color.meld
+
+type linear color (node, int).
+
+color(X, 0).
+
+color(X, N)
+   -o setColor2(X, N),
+      color(X, (N + 1) % NUM_COLORS)@+1000ms.
+
+

@@ -1,0 +1,41 @@
+include #inc/color.meld
+include #inc/direction.meld
+
+type linear inc(node).
+
+type linear zero(node).
+type linear one(node).
+type route neighbor(node, node, int).
+type linear tap(node).
+type linear toadd(node).
+
+const ONE_COLOR = 4.
+const ZERO_COLOR = 5.
+const LOAD_COLOR = 1.
+
+!setColor2(N, ZERO_COLOR).
+zero(N).
+
+tap(N) -o inc(N).
+
+inc(N),
+zero(N)
+   -o one(N), !setColor2(N, ONE_COLOR).
+
+inc(N),
+one(N),
+!neighbor(N, M, WEST)
+   -o zero(N),
+      !setColor2(N, ZERO_COLOR),
+      toadd(M),
+      inc(M)@+1s.
+
+toadd(M),
+one(M),
+!neighbor(M, N, WEST)
+   -o one(M), !setColor2(M, LOAD_COLOR), toadd(N).
+
+toadd(M),
+zero(M)
+   -o !setColor2(M, LOAD_COLOR), zero(M).
+

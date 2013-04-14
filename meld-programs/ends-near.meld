@@ -1,0 +1,22 @@
+include #inc/color.meld
+
+type ending(node).
+type middle(node).
+type nearEnding(node).
+type neighborCount(node, int).
+type route neighbor(node, node, int).
+
+!neighborCount(X, C),
+C > 1
+   -o !setColor2(X, BLUE),
+      !middle(X).
+
+!neighborCount(X, 1)
+   -o !ending(X),
+      !setColor2(X, RED).
+
+!neighbor(X, Y, _),
+!ending(Y),
+!middle(X)
+   -o !nearEnding(X),
+      !setColor2(X, GREEN).
