@@ -3,7 +3,7 @@ CFLAGS = -Wall -Werror -g -pthread
 
 ifeq ($(ARCH)x,x)
  X := $(shell uname -m)
- Y := $(shell uname -o)
+ Y := $(shell uname -s)
  Y := $(subst /,-,$Y)
  ARCH := $X-$Y
  $(info Setting ARCH to $(ARCH))
@@ -20,7 +20,11 @@ Makefile.externs:	Makefile
 	$(CC) -MM $(CFLAGS) $(SOURCES) > Makefile.externs
 
 $(TARGET): $(OBJECTS)
+ifeq ($Y,Darwin)
+	$(CC) $(CFLAGS) -o $(TARGET) $(OBJECTS) -framework OpenGL -framework GLUT -lpthread
+else
 	$(CC) $(CFLAGS) -o $(TARGET) $(OBJECTS) -lglut -lGLU -lGL -lpthread
+endif
 
 %.o:	%.c
 	$(CC) -c $(CFLAGS) -o $@ $<

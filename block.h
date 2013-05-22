@@ -11,7 +11,6 @@ typedef char bool;
 
 typedef uint16_t  Uid;
 
-typedef Uid NodeID;
 typedef int Time;
 #define NUM_PORTS 6
 typedef struct _neighbor_t { Uid n[NUM_PORTS]; }  Neighborhood;

@@ -7,9 +7,11 @@
  *  @bugs No known bugs.
  */
 
+#ifndef __APPLE__
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GL/glut.h>
+#endif
 
 #include <stdlib.h>
 
