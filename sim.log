@@ -1,0 +1,28 @@
+Listening on 5000
+Got a connection!
+Sending: -1@    0 mode==nd 24
+Sending:  1@    0 create 40 num=1 id=1
+Sending:  2@    0 create 40 num=1 id=2
+Sending:  3@    0 create 40 num=1 id=3
+Sending:  4@    0 create 40 num=1 id=4
+Sending:  5@    0 create 40 num=1 id=5
+Sending:  6@    0 create 40 num=1 id=6
+Sending:  7@    0 create 40 num=1 id=7
+Sending:  8@    0 create 40 num=1 id=8
+Sending:  9@    0 create 40 num=1 id=9
+Sending:  2@    0 addNbr 40 neighbor= 1 @ face=West
+Sending:  1@    0 addNbr 40 neighbor= 2 @ face=East
+Sending:  3@    0 addNbr 40 neighbor= 2 @ face=West
+Sending:  2@    0 addNbr 40 neighbor= 3 @ face=East
+Sending:  7@    0 addNbr 40 neighbor= 3 @ face=Down
+Sending:  3@    0 addNbr 40 neighbor= 7 @ face=Top
+Sending:  4@    0 addNbr 40 neighbor= 3 @ face=West
+Sending:  3@    0 addNbr 40 neighbor= 4 @ face=East
+Sending:  8@    0 addNbr 40 neighbor= 3 @ face=Top
+Sending:  3@    0 addNbr 40 neighbor= 8 @ face=Down
+Sending:  5@    0 addNbr 40 neighbor= 4 @ face=West
+Sending:  4@    0 addNbr 40 neighbor= 5 @ face=East
+Sending:  7@    0 addNbr 40 neighbor= 6 @ face=Top
+Sending:  6@    0 addNbr 40 neighbor= 7 @ face=Down
+Sending:  9@    0 addNbr 40 neighbor= 8 @ face=Top
+Sending:  8@    0 addNbr 40 neighbor= 9 @ face=Down
