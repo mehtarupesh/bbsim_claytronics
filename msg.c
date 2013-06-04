@@ -10,8 +10,10 @@
 #include "block.h"
 #include "sim.h"
 #include "vm.h"
+#include "csapp.h"
 
 static int msgverbose = 0;
+
 
 static int is_data_available(int sock);
 static int force_read(int sock);
@@ -23,7 +25,7 @@ vmcmd2str(VMCommand cmd)
   static char buffer[128];
 
   switch(cmd) {
-//  case CMD_CREATE:	return "create";
+  case CMD_CREATE:	return "create";
   case CMD_HAS_RUN:	return "ranfor";
   case CMD_RUN:	return "runtil";
   case CMD_ADD_NBR: return "addNbr";
@@ -109,15 +111,15 @@ static struct sockaddr_in servaddr, cliaddr;
 static socklen_t clilen;
 static int listenfd;
 static int connfd;
-static int haveConnection = 0;
+
 
 // 1 -> connection closed, 0 -> ok
 int
 drain_incoming(void)
 {
   while (is_data_available(connfd)) {
-    if (!force_read(connfd)) {
-      fprintf(stderr, "Connection closed\n");
+   // if (!force_read(connfd)) {
+     // fprintf(stderr, "Connection closed\n");
       return 1;
     }
   }
@@ -355,9 +357,65 @@ static char* portname;
 static void*
 listener(void* ignoreme)
 {
-  int yes = 1;
+	int port=atoi(portname);
+	unsigned int sock, s, maxsock;
+    fd_set socks;
+    fd_set readsocks;
+  	int i=0;
+   
+	sock=Open_listenfd(port);
 
-   haveConnection = 0;
+	printf("Listening on port:%d\n",port);
+    /* Set up the fd_set */
+    FD_ZERO(&socks);
+    FD_SET(sock, &socks);
+    maxsock = sock;
+	//vmStarted();
+	/* Main loop */
+    while (1) {
+        
+        readsocks = socks;
+        if (select(maxsock + 1, &readsocks, NULL, NULL, NULL) == -1) {
+            perror("select");
+            return 1;
+        }
+        for (s = 0; s <= maxsock; s++) {
+			//printf("Inside the for loop.\n");
+            if (FD_ISSET(s, &readsocks)) {
+                //printf("socket %d was ready\n", s);
+                if (s == sock) {
+                    /* New connection */
+                    int newsock;
+                    struct sockaddr_in their_addr;
+                    unsigned int size = sizeof(struct sockaddr_in);
+                    newsock = accept(sock, (struct sockaddr*)&their_addr, &size);
+                   	printf("Accepted a connection.\n");
+				   	if (newsock == -1) {
+                        perror("accept");
+                    }
+					else {
+                        printf("Got a connection from %s on port %d\n", inet_ntoa(their_addr.sin_addr), htons(their_addr.sin_port));
+						FD_SET(newsock, &socks);
+                        if (newsock > maxsock) {
+                            maxsock = newsock;
+                        }
+                    }
+                }else// read from already accepted socket
+                {
+                   int check = (force_read(s));
+				  // if(check == 0) //sock closed, remove from ur list 
+				  // FD_CLR(s,&socks);    
+                }
+            }
+        }
+
+    }
+    close(sock);
+	
+	
+	/*int yes = 1;
+
+ 
    listenfd = socket(AF_INET, SOCK_STREAM, 0);
    bzero(&servaddr, sizeof(servaddr));
    servaddr.sin_family = AF_INET;
@@ -377,7 +435,7 @@ listener(void* ignoreme)
    if (connfd == -1) err("accept failed %d: %s\n", errno, strerror(errno));
 
    fprintf(stderr, "Got a connection!\n");
-   haveConnection = 1;
+
 
    vmStarted();
    if (vmUseThreads) {
@@ -385,45 +443,8 @@ listener(void* ignoreme)
      while (force_read(connfd)) {
        if (msgverbose) fprintf(stderr, "got message\n");
      }
-   } else {
-     // we have to manage running of nodes
-     int nothingHappened = 0;
-     while (1) {
-       int incoming = 0;
-       while (is_data_available(connfd)) {
-         incoming++;
-         nothingHappened = 0;
-         if (!force_read(connfd)) {
-           fprintf(stderr, "Connection closed\n");
-           break;
-         }
-       }
-       if (!incoming) {
-         // nothing was there, sleep for a bit
-         usleep(10000);
-       }
-       if (checkSchedule()) {
-         // we sheduled something
-         nothingHappened = 0;
-       } else if (nothingHappened++ > 10) {
-         fprintf(stderr, "Increment gts: %d\n", globalTimeStamp);
-         Block* b;
-         ForEachBlock(b) {
-           showBlock(stderr, b);
-         }
-         globalTimeStamp++;
-       }
-     }
-   }
-   // all done?
-   // final status report
-   printf("Final Status\n");
-   Block* block;
-   ForEachBlock(block) {
-     showBlock(stdout, block);
-   }
-   checkTest(1);
-   exit(0);
+   } 
+*/
    return (void*)0;
 }
 
