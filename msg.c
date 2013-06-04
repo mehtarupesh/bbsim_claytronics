@@ -115,7 +115,7 @@ static int connfd;
 
 // 1 -> connection closed, 0 -> ok
 int
-drain_incoming(void)
+drain_incoming(int connfd)
 {
   while (is_data_available(connfd)) {
    // if (!force_read(connfd)) {
@@ -138,8 +138,11 @@ static MsgList* mtail = NULL;
 void
 static sendit(message* msg)
 {
+  NodeID nodeid = msg->node;
+  Block* block = getBlock(nodeid);
+  int connfd=block->connfd;
   int size = msg->size + sizeof(message_type);			/* in bytes */
-  if (!haveConnection) {
+  if (connfd!=-1) {
     // must queue
     MsgList* ml = calloc(1, sizeof(MsgList));
     ml->content = calloc(1, size);
@@ -156,7 +159,7 @@ static sendit(message* msg)
   // we have a connection
 
   // first drain incoming if necessary
-  drain_incoming();
+  drain_incoming(connfd);
   // now send everything in que
   while (mhead != NULL) {
     message* m = mhead->content;
@@ -173,7 +176,7 @@ static sendit(message* msg)
     MsgList* next = mhead->next;
     free(mhead);
     mhead = next;
-    if (drain_incoming()) return;
+    if (drain_incoming(connfd)) return;
   }
   mhead = mtail = NULL;
 
@@ -340,7 +343,7 @@ is_data_available(int sock)
    fd_set sready;
    struct timeval nowait;
 
-   if (!haveConnection) return 0; /* no connection, so no data */
+   if (sock==-1) return 0; /* no connection, so no data */
 
    if (msgverbose) fprintf(stderr, "ida\n");
    FD_ZERO(&sready);
