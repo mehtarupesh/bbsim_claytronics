@@ -28,7 +28,7 @@ struct _Block
 {
   /* unique block indentification */
   NodeID id;
-
+  int connfd;
   /* block physical properties */
   int x;
   int y;

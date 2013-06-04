@@ -23,7 +23,7 @@ vmcmd2str(VMCommand cmd)
   static char buffer[128];
 
   switch(cmd) {
-  case CMD_CREATE:	return "create";
+//  case CMD_CREATE:	return "create";
   case CMD_HAS_RUN:	return "ranfor";
   case CMD_RUN:	return "runtil";
   case CMD_ADD_NBR: return "addNbr";
