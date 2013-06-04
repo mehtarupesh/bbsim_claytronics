@@ -107,10 +107,8 @@ msg2string(message* m, char* buffer)
   return buffer;
 }
 
-static struct sockaddr_in servaddr, cliaddr;
+static struct sockaddr_in cliaddr;
 static socklen_t clilen;
-static int listenfd;
-static int connfd;
 
 
 // 1 -> connection closed, 0 -> ok
@@ -118,9 +116,9 @@ int
 drain_incoming(int connfd)
 {
   while (is_data_available(connfd)) {
-   // if (!force_read(connfd)) {
+    if (!force_read(connfd)) {
      // fprintf(stderr, "Connection closed\n");
-      return 1;
+     // return 1;
     }
   }
   return 0;
@@ -364,8 +362,7 @@ listener(void* ignoreme)
 	unsigned int sock, s, maxsock;
     fd_set socks;
     fd_set readsocks;
-  	int i=0;
-   
+  	   
 	sock=Open_listenfd(port);
 
 	printf("Listening on port:%d\n",port);
