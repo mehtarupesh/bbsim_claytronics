@@ -377,7 +377,7 @@ listener(void* ignoreme)
         readsocks = socks;
         if (select(maxsock + 1, &readsocks, NULL, NULL, NULL) == -1) {
             perror("select");
-            return 1;
+            return (void*)1;
         }
         for (s = 0; s <= maxsock; s++) {
 			//printf("Inside the for loop.\n");
@@ -403,6 +403,7 @@ listener(void* ignoreme)
                 }else// read from already accepted socket
                 {
                    int check = (force_read(s));
+				   if(check==0);
 				  // if(check == 0) //sock closed, remove from ur list 
 				  // FD_CLR(s,&socks);    
                 }
