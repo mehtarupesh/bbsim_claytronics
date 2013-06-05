@@ -10,7 +10,7 @@ ifeq ($(ARCH)x,x)
 endif
 
 TARGET := sim
-SOURCES := block.c click.c config.c menu.c render.c sim.c viewer.c world.c msg.c mem.c heap.c
+SOURCES := csapp.c block.c click.c config.c menu.c render.c sim.c viewer.c world.c msg.c mem.c heap.c
 OBJECTS := $(patsubst %.c,%.o,$(SOURCES))
 
 top:	$(TARGET)
