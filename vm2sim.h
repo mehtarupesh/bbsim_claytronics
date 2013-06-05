@@ -1,7 +1,7 @@
 #ifndef _VM2SIM_H_
 #define _VM2SIM_H_
 
-#define CREATE_N_NODES 1
+#define SETID 1
 #define RUN_NODE 2
 #define NODE_RUN 3
 #define STOP 4
@@ -13,6 +13,7 @@
 
 // My names for the vm<->sim msgs
 
+#define CMD_SETID SETID 
 #define CMD_CREATE CREATE_N_NODES
 #define CMD_HAS_RUN NODE_RUN
 #define CMD_RUN RUN_NODE
