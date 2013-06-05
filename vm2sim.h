@@ -10,6 +10,7 @@
 #define TAP 7
 #define SET_COLOR 8
 #define USE_THREADS 9
+#define CREATE_N_NODES 12
 
 // My names for the vm<->sim msgs
 

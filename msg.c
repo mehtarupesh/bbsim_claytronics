@@ -396,7 +396,7 @@ listener(void* ignoreme)
 					nodeID++;
 					Block* b=getBlock(nodeID);
 					b->connfd=newsock;
-					msg2vm(b,CMD_SETID,b->localtime);
+					msg2vm(b,CMD_SETID,b->localTime);
                    	printf("Accepted a connection.\n");
 				   	if (newsock == -1) {
                         perror("accept");
