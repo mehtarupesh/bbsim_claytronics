@@ -241,6 +241,7 @@ msg2vm(Block* dest, VMCommand cmd, Time timestamp, ...)
     break;
 
   }
+
   buffer.size = size*sizeof(message_type);
   buffer.command = cmd;
   if (dest)
@@ -268,7 +269,9 @@ handle_data(message *msg)
   if (1 || msgverbose) fprintf(stderr, "Got message of %d from %u @ %u\n", (int)msg->size, (int)nodeid, (int)ts);
   if (block == NULL) err("unknown block with id %d in msg\n", nodeid);
   switch(msg->command) {
-  case SET_COLOR: 
+  case SET_COLOR:
+    printf("SET_COLOR received for block : %d | connfd : %d",block->id,block->connfd);
+ 
     fprintf(stderr, "%02u <- LEDS = (%d, %d, %d, %d)\n",
 	    (int)nodeid, (int)msg->data.color.r, (int)msg->data.color.g, (int)msg->data.color.b, (int)msg->data.color.i);
     block->simLEDr=msg->data.color.r;

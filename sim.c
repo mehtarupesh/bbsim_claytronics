@@ -146,7 +146,7 @@ int main(int argc, char** argv)
    fprintf(stderr, "Listening on %s\n", port);
 
    //allocate message buffer and set command,size ..sending msg to vm via datagram 
-   if (vmUseThreads) msg2vm(NULL, CMD_MODE_ND, 0);
+  // if (vmUseThreads) msg2vm(NULL, CMD_MODE_ND, 0);
 
    // create blocklist and initialize mutex
    initBlockList();
