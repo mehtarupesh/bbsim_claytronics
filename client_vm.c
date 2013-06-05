@@ -63,9 +63,18 @@ int main (int argc , char *argv[])
     printf("Got Msg: data->command = %d | data->node = %d\n", data.command,data.node);
     block_id = data.node;
 
-	//send SET_COLOR message
-    message *m = (message *)get_message(128,128,128);
-    send_message(m,clientfd);
+	int t = 16;
+	while(1)
+	{
+		int r = (block_id * t) % 255;
+		int g = (block_id * block_id  * t) % 255;
+		int b = (block_id * block_id  * t) % 255;
+		//send SET_COLOR message
+		message *m = (message *)get_message(r,g,b);
+		send_message(m,clientfd);
+		sleep(block_id);
+		t += 10;
+	}
 
 	Close(clientfd);
 	exit(0);

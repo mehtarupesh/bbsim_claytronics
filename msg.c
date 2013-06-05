@@ -392,6 +392,7 @@ listener(void* ignoreme)
                 //printf("socket %d was ready\n", s);
                 if (s == sock) {
                     /* New connection */
+//					printf("Shall be accepting the connection.\n");
                     int newsock;
                     struct sockaddr_in their_addr;
                     unsigned int size = sizeof(struct sockaddr_in);
@@ -413,6 +414,7 @@ listener(void* ignoreme)
                     }
                 }else// read from already accepted socket
                 {
+//					printf("Reading from an accepted socket:%d\n", s);
                    int check = (force_read(s));
 				   if(check==0);
 				  // if(check == 0) //sock closed, remove from ur list 

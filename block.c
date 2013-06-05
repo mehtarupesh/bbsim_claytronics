@@ -4,7 +4,7 @@
 #include "block.h"
 #include "vm.h"
 #include "sim.h"
-
+#include "csapp.h"
 static unsigned int nextBlockId = 1;
 static BlockList blockList;  // = Q_STATIC_INIT;
 static Block** allBlocks = NULL;
@@ -49,7 +49,7 @@ createBlock(int x, int y, int z)
   newBlock = calloc(1, sizeof(Block));
   if (newBlock == NULL)
     return newBlock;
-
+  newBlock->connfd=-1;
   newBlock->id = nextBlockId++;
   newBlock->x = x;
   newBlock->y = y;
@@ -73,8 +73,16 @@ createBlock(int x, int y, int z)
 
   //fprintf(stderr, "made block, inserting into Q\n");
   registerBlock(newBlock);
+   char* port="5000";
+   char* path[2];
+   path[0]=port;
+   path[1]=NULL;
 
-  msg2vm(newBlock, CMD_CREATE, newBlock->localTime, 1, newBlock->id);
+   if(fork()==0){
+       execve("client_vm",path,NULL);
+    }
+    
+//  msg2vm(newBlock, CMD_CREATE, newBlock->localTime, 1, newBlock->id);
 
   return newBlock;
 }
