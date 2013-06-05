@@ -140,7 +140,7 @@ static sendit(message* msg)
   Block* block = getBlock(nodeid);
   int connfd=block->connfd;
   int size = msg->size + sizeof(message_type);			/* in bytes */
-  if (connfd!=-1) {
+  if (connfd==-1) {
     // must queue
     MsgList* ml = calloc(1, sizeof(MsgList));
     ml->content = calloc(1, size);
@@ -242,6 +242,9 @@ msg2vm(Block* dest, VMCommand cmd, Time timestamp, ...)
     buffer.data.neighborCount.total = va_arg(ap, message_type);
     size += 1;
     break;
+	
+	case CMD_SETID:
+	break;
 
   }
   buffer.size = size*sizeof(message_type);
@@ -370,6 +373,7 @@ listener(void* ignoreme)
     FD_ZERO(&socks);
     FD_SET(sock, &socks);
     maxsock = sock;
+	int nodeID=0;
 	//vmStarted();
 	/* Main loop */
     while (1) {
@@ -389,6 +393,10 @@ listener(void* ignoreme)
                     struct sockaddr_in their_addr;
                     unsigned int size = sizeof(struct sockaddr_in);
                     newsock = accept(sock, (struct sockaddr*)&their_addr, &size);
+					nodeID++;
+					Block* b=getBlock(nodeID);
+					b->connfd=newsock;
+					msg2vm(b,CMD_SETID,b->localtime);
                    	printf("Accepted a connection.\n");
 				   	if (newsock == -1) {
                         perror("accept");
