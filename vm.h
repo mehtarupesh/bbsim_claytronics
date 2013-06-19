@@ -20,7 +20,7 @@ typedef struct _message_format {
 	//CMD_SEND_MESSAGE
 	struct{
 		message_type face;
-		message_type dest_node;
+		message_type dest_nodeID;
 	}send_message;
 	
     // CMD_COLOR
