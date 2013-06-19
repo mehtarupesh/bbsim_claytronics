@@ -270,7 +270,7 @@ handle_data(message *msg)
   NodeID nodeid = msg->node;
   Block* block = getBlock(nodeid);
   Time ts = (Time)msg->timestamp;
-
+if(block!=NULL)
   block->msgTargetsDelta++;
   if (1 || msgverbose) fprintf(stderr, "Got message of %d from %u @ %u\n", (int)msg->size, (int)nodeid, (int)ts);
   if (block == NULL) err("unknown block with id %d in msg\n", nodeid);
@@ -285,7 +285,16 @@ handle_data(message *msg)
     block->simLEDb=msg->data.color.b;
     block->simLEDi=msg->data.color.i;
     break;
-
+	
+	case SEND_MESSAGE:
+	printf("SEND_MESSAGE received\n");
+	NodeID tempID=msg->node;
+	msg->node=msg->send_message.dest_nodeID;
+	msg->send_message.dest_nodeID=tempID;
+	msg->command=RECEIVE_MESSAGE;
+	sendit(msg);
+	break;
+	
   case CMD_HAS_RUN:
     {
       int numother = (int)msg->data.runtil.num;

@@ -17,7 +17,12 @@ typedef struct _message_format {
       message_type num;
       message_type start;
     } create;
-
+	//CMD_SEND_MESSAGE
+	struct{
+		message_type face;
+		message_type dest_node;
+	}send_message;
+	
     // CMD_COLOR
     struct {
       message_type r;
