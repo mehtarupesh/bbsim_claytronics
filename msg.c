@@ -289,8 +289,8 @@ if(block!=NULL)
 	case SEND_MESSAGE:
 	printf("SEND_MESSAGE received\n");
 	NodeID tempID=msg->node;
-	msg->node=msg->send_message.dest_nodeID;
-	msg->send_message.dest_nodeID=tempID;
+	msg->node=msg->data.send_message.dest_nodeID;
+	msg->data.send_message.dest_nodeID=tempID;
 	msg->command=RECEIVE_MESSAGE;
 	sendit(msg);
 	break;
