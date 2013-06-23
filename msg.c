@@ -386,7 +386,6 @@ listener(void* ignoreme)
     FD_SET(sock, &socks);
     maxsock = sock;
 	int nodeID=0;
-	//vmStarted();
 	/* Main loop */
     while (1) {
         
@@ -410,7 +409,9 @@ listener(void* ignoreme)
 					Block* b=getBlock(nodeID);
 					b->connfd=newsock;
 					msg2vm(b,CMD_SETID,b->localTime);
-                   	printf("Accepted a connection.\n");
+                   	
+					vmStarted();
+					printf("Accepted a connection.\n");
 				   	if (newsock == -1) {
                         perror("accept");
                     }
