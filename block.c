@@ -73,13 +73,13 @@ createBlock(int x, int y, int z)
 
   //fprintf(stderr, "made block, inserting into Q\n");
   registerBlock(newBlock);
-  /* char* port="5000";
+  /* char* port="-f configs/rainbow.m";
    char* path[2];
    path[0]=port;
    path[1]=NULL;
 
    if(fork()==0){
-       execve("client_vm",path,NULL);
+       execve("../../branch/meld/meld",path,NULL);
     }*/
     
 //  msg2vm(newBlock, CMD_CREATE, newBlock->localTime, 1, newBlock->id);

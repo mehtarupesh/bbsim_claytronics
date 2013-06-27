@@ -13,7 +13,7 @@
 #include "csapp.h"
 
 static int msgverbose = 0;
-
+static bool allConnected=false;
 
 static int is_data_available(int sock);
 static int force_read(int sock);
@@ -270,7 +270,7 @@ handle_data(message *msg)
   NodeID nodeid = msg->node;
   Block* block = getBlock(nodeid);
   Time ts = (Time)msg->timestamp;
-if(block!=NULL)
+  if(block!=NULL)
   block->msgTargetsDelta++;
   if (1 || msgverbose) fprintf(stderr, "Got message of %d from %u @ %u\n", (int)msg->size, (int)nodeid, (int)ts);
   if (block == NULL) err("unknown block with id %d in msg\n", nodeid);
@@ -295,19 +295,6 @@ if(block!=NULL)
 	sendit(msg);
 	break;
 	
-  case CMD_HAS_RUN:
-    {
-      int numother = (int)msg->data.runtil.num;
-      fprintf(stderr, "%02u til:%d comm with:%d%c", (int)nodeid, ts, numother, (numother == 0 ? '\n' : ':'));
-      updateTime(block, ts, 0);
-      int i;
-      for (i=0; i<numother; i++) {
-        fprintf(stderr, "%d%s", (int)msg->data.runtil.other[i], (i+1)==numother?"\n":", ");
-        needsSchedule(getBlock(msg->data.runtil.other[i]), ts);
-      }
-   }
-    break;
-
   default:
     fprintf(stderr, "Unknown msg: %d\n", (int)msg->command);
   }
@@ -409,8 +396,10 @@ listener(void* ignoreme)
 					Block* b=getBlock(nodeID);
 					b->connfd=newsock;
 					msg2vm(b,CMD_SETID,b->localTime);
-                   	
+                   			if(!allConnected&&(nodeID==numberOfRobots)){
 					vmStarted();
+					allConnected=true;
+					}
 					printf("Accepted a connection.\n");
 				   	if (newsock == -1) {
                         perror("accept");

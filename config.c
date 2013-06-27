@@ -102,7 +102,7 @@ void readConfig(char* name)
 		  err("Input from %s:%d expected 4, got %d [%s]", name, line, num, buffer);
 		//fprintf(stderr, "create %d at: %d, %d, %d\n", line, x, y, z);
 		createBlock(x, y, z);
-
+		numberOfRobots++;
 		line++;
 	}
 	fclose(f);

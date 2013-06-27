@@ -6,5 +6,6 @@ void vmStarted(void);
 Time globalTimeStamp;
 int vmUseThreads;
 int checkTest(int alldone);
+int numberOfRobots;		/* number of blinkblocks in system */
 
 #endif

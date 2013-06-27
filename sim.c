@@ -17,7 +17,6 @@
 
 char* progname;			/* name of this program */
 char* configname = 0;		/* name of config file */
-int numberOfRobots = 0;		/* number of blinkblocks in system */
 bool debug = false;             /* debug-mode */
 
 int lastBlockId = 0;
@@ -81,7 +80,7 @@ int main(int argc, char** argv)
    bool   configured = false;
    bool   graphics = true;
    char* port = "5000";
-
+   numberOfRobots = 0;		/* number of blinkblocks in system */
    --argc;
    progname = *argv++;
    while (argc > 0 && (argv[0][0] == '-')) {
