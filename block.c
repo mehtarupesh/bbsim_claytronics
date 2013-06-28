@@ -73,14 +73,18 @@ createBlock(int x, int y, int z)
 
   //fprintf(stderr, "made block, inserting into Q\n");
   registerBlock(newBlock);
-  /* char* port="-f configs/rainbow.m";
-   char* path[2];
-   path[0]=port;
-   path[1]=NULL;
-
+   char* prog="/home/ankit/Desktop/branch/meld/examples/rainbow.m";
+   char* path[6];
+   char* sched="sl";
+   path[0]="/home/ankit/Desktop/branch/meld/meld";
+   path[1]="-f";
+	path[2]=prog;
+	path[3]="-c";
+	path[4]=sched;
+	path[5]=NULL;
    if(fork()==0){
-       execve("../../branch/meld/meld",path,NULL);
-    }*/
+       execve("/home/ankit/Desktop/branch/meld/meld",path,NULL);
+    }
     
 //  msg2vm(newBlock, CMD_CREATE, newBlock->localTime, 1, newBlock->id);
 
