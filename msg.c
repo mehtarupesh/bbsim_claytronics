@@ -38,6 +38,9 @@ vmcmd2str(VMCommand cmd)
   case CMD_ADD_VACANT: return "addVnct";
   case CMD_DEL_VACANT: return "delVnct";
   case STOP: return "stopvm";
+  case CMD_SETID: return "setid";
+  case CMD_SENDMSG: return "sendMessage";
+  case CMD_RECVMSG: return "receiveMessage";
   default:	sprintf(buffer, "??%d??", cmd); return buffer;
   }
   return "??";

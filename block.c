@@ -73,7 +73,7 @@ createBlock(int x, int y, int z)
 
   //fprintf(stderr, "made block, inserting into Q\n");
   registerBlock(newBlock);
-   char* prog="/home/ankit/Desktop/branch/meld/examples/rainbow.m";
+   char* prog="/home/ankit/Desktop/branch/meld/examples/tapprop.m";
    char* path[6];
    char* sched="sl";
    path[0]="/home/ankit/Desktop/branch/meld/meld";
