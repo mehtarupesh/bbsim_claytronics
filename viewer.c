@@ -285,7 +285,7 @@ void add_block (int screenX, int screenY)
 	}
 
 	// run block thread
-	startBlock(newBlock);
+	//startBlock(newBlock);
 
 	fprintf(stderr, "started block @ %s face %d\r\n", nodeIDasString(block->id, 0), face);
 }

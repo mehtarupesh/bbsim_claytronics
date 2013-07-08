@@ -227,7 +227,8 @@ msg2vm(Block* dest, VMCommand cmd, Time timestamp, ...)
     buffer.data.create.start = va_arg(ap, message_type);
     size += 2;
     break;
-  case CMD_DEL_NBR:
+  case CMD_DEL_NBR
+  :
     buffer.data.delNeighbor.face = va_arg(ap, message_type);
     size += 1;
     break;
@@ -401,10 +402,13 @@ listener(void* ignoreme)
 					Block* b=getBlock(nodeID);
 					b->connfd=newsock;
 					msg2vm(b,CMD_SETID,b->localTime);
-                   			if(!allConnected&&(nodeID==numberOfRobots)){
+          if(!allConnected&&(nodeID==numberOfRobots)){
 					vmStarted();
 					allConnected=true;
 					}
+          if(allConnected){
+            startBlock(b);
+          }
 					printf("Accepted a connection.\n");
 				   	if (newsock == -1) {
                         perror("accept");

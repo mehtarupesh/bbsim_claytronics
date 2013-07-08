@@ -1,0 +1,129 @@
+predicate [_init]
+predicate [set-priority]
+predicate [setcolor]
+predicate [setedgelabel]
+predicate [write-string]
+predicate [add-priority]
+predicate [schedule-next]
+predicate [setColor2]
+predicate [neighbor]
+predicate [level]
+predicate [bottomNeighbor]
+predicate [noBottomNeighbor]
+predicate [topNeighbor]
+predicate [sideNeighbor]
+predicate [vacant]
+predicate [___robhgieNedis]
+predicate [___robhgieNmottob]
+predicate [___robhgieNpot]
+Setting the predicates
+getting message of length 8
+Returning message of length 24
+Processing SETID 24d bytes for 1d
+Node id is 1
+predicate [_init]
+predicate [set-priority]
+predicate [setcolor]
+predicate [setedgelabel]
+predicate [write-string]
+predicate [add-priority]
+predicate [schedule-next]
+predicate [setColor2]
+predicate [neighbor]
+predicate [level]
+predicate [bottomNeighbor]
+predicate [noBottomNeighbor]
+predicate [topNeighbor]
+predicate [sideNeighbor]
+predicate [vacant]
+predicate [___robhgieNedis]
+predicate [___robhgieNmottob]
+predicate [___robhgieNpot]
+Setting the predicates
+getting message of length 8
+Returning message of length 24
+Processing SETID 24d bytes for 2d
+Node id is 2
+getting message of length 8
+Returning message of length 40
+Processing ADD_NEIGHBOR 40d bytes for 1d
+Node 1
+Add tuple _init()
+Rule 0 activated
+Add tuple _init()
+Add tuple !neighbor(@2, 5)
+in route
+1 Send !___robhgieNmottob(@1)to 2
+Add tuple !bottomNeighbor(@2)
+Strat level: 0 got 2 tuples 
+Run rule init -o axioms
+Remove tuple _init()
+Remove tuple _init()
+Rule 0 deactivated
+Node 1
+Add tuple !vacant(0)
+Add tuple !vacant(1)
+Add tuple !vacant(2)
+Add tuple !vacant(3)
+Add tuple !vacant(4)
+========> Deleted normal !vacant(5) !vacant(5)@-1
+Strat level: 1 got 0 tuples 
+getting message of length 8
+Returning message of length 40
+Processing ADD_NEIGHBOR 40d bytes for 2d
+Node 2
+Add tuple _init()
+Rule 0 activated
+Add tuple _init()
+Add tuple !neighbor(@1, 0)
+in route
+2 Send !___robhgieNpot(@2)to 1
+Add tuple !topNeighbor(@1)
+Strat level: 0 got 2 tuples 
+Run rule init -o axioms
+Remove tuple _init()
+Remove tuple _init()
+Rule 0 deactivated
+getting message of length 8
+Returning message of length 47
+Processing RECEIVE_MESSAGE 47d bytes for 2d
+Node 2
+Add tuple !___robhgieNmottob(@1)
+Strat level: 0 got 0 tuples 
+Node 2
+========> Deleted normal !vacant(0) !vacant(0)@-1
+Add tuple !vacant(1)
+Add tuple !vacant(2)
+Add tuple !vacant(3)
+Add tuple !vacant(4)
+Add tuple !vacant(5)
+Add tuple !noBottomNeighbor()
+in route
+2 Send !level(1)to 1
+In setcolor
+Add tuple !level(0)
+Strat level: 1 got 0 tuples 
+getting message of length 8
+Returning message of length 47
+Processing RECEIVE_MESSAGE 47d bytes for 1d
+Node 1
+Add tuple !___robhgieNpot(@2)
+Strat level: 0 got 0 tuples 
+getting message of length 8
+Returning message of length 47
+Processing RECEIVE_MESSAGE 47d bytes for 1d
+Node 1
+in route
+1 Send !level(0)to 2
+In setcolor
+age of length 8
+Returning message of length 47
+Add tuple !level(1)
+Strat level: 1 got 0 tuples 
+Processing RECEIVE_MESSAGE 47d bytes for 2d
+Node 2
+Strat level: 1 got 0 tuples 
+getting message of length 8
+Returning message of length 24
+Processing TAP 24d bytes for 1d
+0 tap(1)
