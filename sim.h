@@ -2,7 +2,7 @@
 #define _SIM_H_
 
 void err(char *prompt, ...);
-void vmStarted(void);
+void vmStarted();
 Time globalTimeStamp;
 int vmUseThreads;
 int checkTest(int alldone);

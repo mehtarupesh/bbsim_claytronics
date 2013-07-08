@@ -141,6 +141,10 @@ static sendit(message* msg)
 {
   NodeID nodeid = msg->node;
   Block* block = getBlock(nodeid);
+  if(block==NULL){
+    printf("Message not sent to block %d \n",nodeid);
+    return;
+  }
   int connfd=block->connfd;
   int size = msg->size + sizeof(message_type);			/* in bytes */
   if (connfd==-1) {
@@ -279,7 +283,7 @@ handle_data(message *msg)
   if (block == NULL) err("unknown block with id %d in msg\n", nodeid);
   switch(msg->command) {
   case SET_COLOR:
-    printf("SET_COLOR received for block : %d | connfd : %d",block->id,block->connfd);
+    printf("SET_COLOR received for block : %d | connfd : %d\n",block->id,block->connfd);
  
     fprintf(stderr, "%02u <- LEDS = (%d, %d, %d, %d)\n",
 	    (int)nodeid, (int)msg->data.color.r, (int)msg->data.color.g, (int)msg->data.color.b, (int)msg->data.color.i);
@@ -385,10 +389,8 @@ listener(void* ignoreme)
             return (void*)1;
         }
         for (s = 0; s <= maxsock; s++) {
-			//printf("Inside the for loop.\n");
-            if (FD_ISSET(s, &readsocks)) {
-                //printf("socket %d was ready\n", s);
-                if (s == sock) {
+			    if (FD_ISSET(s, &readsocks)) {
+            if (s == sock) {
                     /* New connection */
 //					printf("Shall be accepting the connection.\n");
                     int newsock;
@@ -428,40 +430,7 @@ listener(void* ignoreme)
     }
     close(sock);
 	
-	
-	/*int yes = 1;
-
- 
-   listenfd = socket(AF_INET, SOCK_STREAM, 0);
-   bzero(&servaddr, sizeof(servaddr));
-   servaddr.sin_family = AF_INET;
-   servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-   servaddr.sin_port = htons(atoi(portname));
-   int status = setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int));
-   if (status != 0) err("setsockopt failed %d:%s\n", errno, strerror(errno));
-   
-   status = bind(listenfd, (struct sockaddr *)&servaddr, sizeof(servaddr));
-   if (status != 0) err("bind failed %d: %s\n", errno, strerror(errno));
-
-   status = listen(listenfd, 1024);
-   if (status != 0) err("listen failed %d: %s\n", errno, strerror(errno));
-
-   clilen = sizeof(cliaddr);
-   connfd = accept(listenfd, (struct sockaddr *)&cliaddr, &clilen);
-   if (connfd == -1) err("accept failed %d: %s\n", errno, strerror(errno));
-
-   fprintf(stderr, "Got a connection!\n");
-
-
-   vmStarted();
-   if (vmUseThreads) {
-     // just read message and let vm schedule nodes
-     while (force_read(connfd)) {
-       if (msgverbose) fprintf(stderr, "got message\n");
-     }
-   } 
-*/
-   return (void*)0;
+	return (void*)0;
 }
 
 // get started, make connection, spawn thread

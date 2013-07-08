@@ -5,6 +5,8 @@
 #include "vm.h"
 #include "sim.h"
 #include "csapp.h"
+#include "heap.h"
+
 static unsigned int nextBlockId = 1;
 static BlockList blockList;  // = Q_STATIC_INIT;
 static Block** allBlocks = NULL;
@@ -73,7 +75,7 @@ createBlock(int x, int y, int z)
 
   //fprintf(stderr, "made block, inserting into Q\n");
   registerBlock(newBlock);
-   char* prog="/home/ankit/Desktop/branch/meld/examples/tapprop.m";
+   char* prog="/home/ankit/Desktop/branch/meld/examples/rainbow.m";
    char* path[6];
    char* sched="sl";
    path[0]="/home/ankit/Desktop/branch/meld/meld";
@@ -124,8 +126,8 @@ getBlock(NodeID id)
 {
   if (id > nextBlockId) err("Asked for %d higher than num allocated blocks %d", id, nextBlockId);
   Block* block = allBlocks[id];
-  if (block == NULL) err("Aksed for %d which has NULL entry in allBlocks", id);
-  if (block->destroyed) err("Asked for %d which was destroyed", id);
+  if (block == NULL) printf("Asked for %d which is not present in the list.\n",id);//err("Aksed for %d which has NULL entry in allBlocks", id);
+  if (block->destroyed); //err("Asked for %d which was destroyed", id);
   return block;
 }
 
@@ -199,8 +201,6 @@ tellNeighborsDestroyed(Block *b, FaceBlock* list)
   }
   if (list != NULL) list[j].block = NULL;
 }
-
-#include "heap.h"
 
 int
 bLocalTimeCompare(Block* a, Block* b)

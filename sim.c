@@ -239,7 +239,7 @@ checkTest(alldone)
   return 0;
 }
 
-// will return 0 if never called before, other return 1
+// will return 0 if never called before, other return 1F
 int 
 alreadyExecuted(int enter)
 {
@@ -270,9 +270,10 @@ vmStarted()
 
   // get blocks started
   Block *block;
-
+  printf("In vmStarted.\n");
   Q_FOREACH(block, getBlockList(), blockLink) {
+    //block=getBlock(id);
     startBlock(block);
-  }
+ }
   Q_ENDFOREACH(getBlockList());
 }
